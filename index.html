@@ -3,94 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Document avec Export PDF</title>
-    <!-- Chargement de la bibliothèque html2pdf.js pour le téléchargement direct -->
+    <title>EDL-Expert - Application Pro État des Lieux</title>
+    <!-- Tailwind CSS pour un design moderne -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Version stabilisée de html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        .container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        p {
-            font-size: 1.1rem;
-        }
-        .btn-container {
-            margin-top: 30px;
-            text-align: center;
-        }
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        /* Style spécifique pour masquer le bouton lors de la génération du PDF */
-        .no-pdf {
-            display: block;
+        .signature-pad {
+            border: 2px dashed #cbd5e1;
+            background-color: #f8fafc;
+            cursor: crosshair;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
 
-    <div class="container" id="element-to-print">
-        <h1>Mon Nouveau Projet GitHub Pages</h1>
-        <p>Félicitations ! Ce fichier HTML est prêt à être déployé sur votre dépôt GitHub. Il intègre un système moderne permettant de générer et de télécharger un document PDF proprement en un seul clic.</p>
-        
-        <p>Le bouton ci-dessous utilise la bibliothèque <strong>html2pdf.js</strong>. Contrairement à la méthode d'impression classique, celle-ci capture directement le contenu HTML sélectionné et déclenche un téléchargement automatique du fichier PDF sur votre ordinateur ou smartphone.</p>
-        
-        <div class="btn-container">
-            <button class="btn" id="pdf-button" onclick="generatePDF()">Générer le PDF</button>
+    <!-- BARRE DE NAVIGATION (Masquée automatiquement sur le PDF) -->
+    <nav class="bg-indigo-600 text-white shadow-md p-4 sticky top-0 z-50 id-no-print">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-check"></i> EDL-Expert Touraine
+            </h1>
+            <button onclick="genererPDF()" class="bg-emerald-500 hover:bg-emerald-600 font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-file-pdf"></i> Générer le PDF
+            </button>
         </div>
-    </div>
+    </nav>
+
+    <!-- DOCUMENT CENTRAL -->
+    <main id="edl-document" class="max-w-4xl mx-auto bg-white my-6 p-8 shadow-xl rounded-xl border border-gray-100">
+        
+        <!-- EN-TÊTE DU RAPPORT -->
+        <div class="border-b-2 border-indigo-600 pb-6 mb-6 flex justify-between items-start">
+            <div>
+                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">CONSTAT D'ÉTAT DES LIEUX</h2>
+                <div class="mt-2 flex gap-4 text-sm font-semibold">
+                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" checked class="text-indigo-600"> ENTRÉE</label>
+                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" class="text-indigo-600"> SORTIE</label>
+                </div>
+            </div>
+            <div class="text-right text-sm text-gray-500">
+                <p>Date de visite : <input type="date" id="date-edl" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
+                <script>document.getElementById('date-edl').valueAsDate = new Date();</script>
+            </div>
+        </div>
+
+        <!-- INFORMATIONS GÉNÉRALES -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-gray-50 p-4 rounded-lg">
+            <div>
+                <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-user"></i> Les Parties</h3>
+                <div class="space-y-2 text-sm">
+                    <div><span class="font-medium text-gray-600">Propriétaire / Mandant :</span> <input type="text" placeholder="Nom du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Locataire(s) :</span> <input type="text" placeholder="Nom du locataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Opérateur (Vous) :</span> <input type="text" value="Prestataire Indépendant - Bléré" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1 font-semibold text-gray-700"></div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-house"></i> Le Bien Locatif</h3>
+                <div class="space-y-2 text-sm">
+                    <div><span class="font-medium text-gray-600">Adresse complète :</span> <input type="text" placeholder="Adresse du logement" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="font-medium text-gray-600">Type :</span> <input type="text" placeholder="Ex: Studio, T3" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                        <div><span class="font-medium text-gray-600">Énergie :</span> <input type="text" placeholder="Ex: Élec, Gaz" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPTEURS ET CLÉS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="border border-gray-200 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-gauge text-indigo-500"></i> Relevés des Compteurs</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between items-center"><span>Électricité :</span> <input type="text" placeholder="kWh" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
+                    <div class="flex justify-between items-center"><span>Eau Froide :</span> <input type="text" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
+                    <div class="flex justify-between items-center"><span>Gaz :</span> <input type="text" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
+                </div>
+            </div>
+            <div class="border border-gray-200 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-key text-indigo-500"></i> Remise des Clés</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between items-center"><span>Clés Entrée :</span> <input type="number" value="1" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
+                    <div class="flex justify-between items-center"><span>Badges / Vigik :</span> <input type="number" value="0" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
+                    <div class="flex justify-between items-center"><span>Boîte aux lettres :</span> <input type="number" value="1" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉTATS DES PIÈCES -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-4">
+                <h3 class="text-xl font-bold text-gray-900"><i class="fa-solid fa-list-check text-indigo-600"></i> Descriptif des Pièces</h3>
+                <button onclick="ajouterPiece()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition id-no-print cursor-pointer">
+                    <i class="fa-solid fa-plus-circle"></i> Ajouter une pièce
+                </button>
+            </div>
+            
+            <div id="conteneur-pieces" class="space-y-4">
+                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-xs relative evaluation-block" id="piece-1">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                        <input type="text" value="Entrée / Couloir" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
+                        <div class="flex gap-1 text-xs id-no-print">
+                            <button onclick="gererPhoto('piece-1')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border border-gray-300 cursor-pointer"><i class="fa-solid fa-camera"></i> Photo</button>
+                            <button onclick="this.closest('.evaluation-block').remove()" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded border border-red-200 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Murs :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Sols :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Plafond :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                    </div>
+                    <textarea placeholder="Observations précises (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
+                    <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
+                    <input type="file" accept="image/*" class="hidden input-photo" onchange="chargerFichierPhoto(event, 'piece-1')">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 pt-6 border-t-2 border-gray-200">
+            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fa-solid fa-signature text-indigo-600"></i> Signatures obligatoires (sur place)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="font-semibold text-sm text-gray-700 mb-1">Le Bailleur / Mandataire :</p>
+                    <canvas id="sig-operator" class="signature-pad w-full h-32 rounded-lg" width="400" height="150"></canvas>
+                    <button onclick="effacerSignature('sig-operator')" class="text-xs text-red-500 mt-1 hover:underline id-no-print cursor-pointer"><i class="fa-solid fa-eraser"></i> Effacer</button>
+                </div>
+                <div>
+                    <p class="font-semibold text-sm text-gray-700 mb-1">Le Locataire :</p>
+                    <canvas id="sig-tenant" class="signature-pad w-full h-32 rounded-lg" width="400" height="150"></canvas>
+                    <button onclick="effacerSignature('sig-tenant')" class="text-xs text-red-500 mt-1 hover:underline id-no-print cursor-pointer"><i class="fa-solid fa-eraser"></i> Effacer</button>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        function generatePDF() {
-            // Sélectionne l'élément à convertir en PDF
-            const element = document.getElementById('element-to-print');
-            
-            // Masque temporairement le bouton pour qu'il n'apparaisse pas sur le PDF
-            const button = document.getElementById('pdf-button');
-            button.style.display = 'none';
+        let compteurPieces = 1;
 
-            // Options de configuration pour le PDF
-            const opt = {
+        function ajouterPiece() {
+            compteurPieces++;
+            const id = 'piece-' + compteurPieces;
+            const HTMLPiece = `
+                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-xs relative evaluation-block" id="${id}">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                        <input type="text" value="Nouvelle Pièce" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
+                        <div class="flex gap-1 text-xs id-no-print">
+                            <button onclick="gererPhoto('${id}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border border-gray-300 cursor-pointer"><i class="fa-solid fa-camera"></i> Photo</button>
+                            <button onclick="this.closest('.evaluation-block').remove()" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded border border-red-200 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Murs :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Sols :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
+                            <span class="font-medium">Plafond :</span>
+                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
+                        </div>
+                    </div>
+                    <textarea placeholder="Observations précises..." class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
+                    <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
+                    <input type="file" accept="image/*" class="hidden input-photo" onchange="chargerFichierPhoto(event, '${id}')">
+                </div>
+            `;
+            document.getElementById('conteneur-pieces').insertAdjacentHTML('beforeend', HTMLPiece);
+        }
+
+        function gererPhoto(idPiece) {
+            document.getElementById(idPiece).querySelector('.input-photo').click();
+        }
+
+        function chargerFichierPhoto(event, idPiece) {
+            const fichier = event.target.files;
+            if (!fichier) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const galerie = document.getElementById(idPiece).querySelector('.galerie-photos');
+                const fragmentPhoto = `
+                    <div class="relative border border-gray-200 rounded overflow-hidden h-20 bg-gray-100">
+                        <img src="\${e.target.result}" class="w-full h-full object-cover">
+                        <button onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5 id-no-print opacity-90 hover:opacity-100 cursor-pointer">X</button>
+                    </div>
+                `;
+                galerie.insertAdjacentHTML('beforeend', fragmentPhoto);
+            };
+            reader.readAsDataURL(fichier);
+        }
+
+        function initialiserPadsSignature() {
+            ['sig-operator', 'sig-tenant'].forEach(id => {
+                const canvas = document.getElementById(id);
+                const ctx = canvas.getContext('2d');
+                let enDessin = false;
+
+                function dessiner(e) {
+                    if (!enDessin) return;
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.strokeStyle = '#1e3a8a';
+                    
+                    const rect = canvas.getBoundingClientRect();
+                    const clientX = e.touches ? e.touches.clientX : e.clientX;
+                    const clientY = e.touches ? e.touches.clientY : e.clientY;
+                    
+                    ctx.lineTo(clientX - rect.left, clientY - rect.top);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+                }
+
+                canvas.addEventListener('mousedown', (e) => { enDessin = true; ctx.beginPath(); dessiner(e); });
+                canvas.addEventListener('mousemove', dessiner);
+                canvas.addEventListener('mouseup', () => enDessin = false);
+                canvas.addEventListener('mouseleave', () => enDessin = false);
+                
+                canvas.addEventListener('touchstart', (e) => { enDessin = true; ctx.beginPath(); dessiner(e); });
+                canvas.addEventListener('touchmove', (e) => { dessiner(e); });
+                canvas.addEventListener('touchend', () => enDessin = false);
+            });
+        }
+
+        function effacerSignature(id) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function genererPDF() {
+            const elementsAMasquer = document.querySelectorAll('.id-no-print');
+            elementsAMasquer.forEach(el => el.style.display = 'none');
+
+            const element = document.getElementById('edl-document');
+            
+            const options = {
                 margin:       10,
-                filename:     'mon-document.pdf',
+                filename:     'Constat_Etat_Des_Lieux_Blere.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Génère le PDF et restaure le bouton une fois terminé
-            html2pdf().set(opt).from(element).save().then(() => {
-                button.style.style = ''; // Restaure le style par défaut
-                button.style.display = 'inline-block';
+            html2pdf().set(options).from(element).save().then(() => {
+                elementsAMasquer.forEach(el => el.style.display = '');
+            }).catch(err => {
+                console.error(err);
+                elementsAMasquer.forEach(el => el.style.display = '');
             });
         }
+
+        window.onload = initialiserPadsSignature;
     </script>
 </body>
 </html>
