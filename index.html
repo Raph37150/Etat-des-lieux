@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDL-Expert - Application Pro État des Lieux</title>
     <!-- Tailwind CSS pour un design moderne -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <!-- FontAwesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Version stabilisée de html2pdf.js -->
@@ -102,7 +102,7 @@
             </div>
             
             <div id="conteneur-pieces" class="space-y-4">
-                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-xs relative evaluation-block" id="piece-1">
+                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm relative evaluation-block" id="piece-1">
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
                         <input type="text" value="Entrée / Couloir" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
                         <div class="flex gap-1 text-xs id-no-print">
@@ -155,7 +155,7 @@
             compteurPieces++;
             const id = 'piece-' + compteurPieces;
             const HTMLPiece = `
-                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-xs relative evaluation-block" id="${id}">
+                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm relative evaluation-block" id="${id}">
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
                         <input type="text" value="Nouvelle Pièce" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
                         <div class="flex gap-1 text-xs id-no-print">
@@ -190,7 +190,7 @@
         }
 
         function chargerFichierPhoto(event, idPiece) {
-            const fichier = event.target.files;
+            const fichier = event.target.files[0];
             if (!fichier) return;
 
             const reader = new FileReader();
@@ -198,7 +198,7 @@
                 const galerie = document.getElementById(idPiece).querySelector('.galerie-photos');
                 const fragmentPhoto = `
                     <div class="relative border border-gray-200 rounded overflow-hidden h-20 bg-gray-100">
-                        <img src="\${e.target.result}" class="w-full h-full object-cover">
+                        <img src="${e.target.result}" class="w-full h-full object-cover">
                         <button onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5 id-no-print opacity-90 hover:opacity-100 cursor-pointer">X</button>
                     </div>
                 `;
@@ -220,13 +220,14 @@
                     ctx.strokeStyle = '#1e3a8a';
                     
                     const rect = canvas.getBoundingClientRect();
-                    const clientX = e.touches ? e.touches.clientX : e.clientX;
-                    const clientY = e.touches ? e.touches.clientY : e.clientY;
+                    const pt = e.touches ? e.touches[0] : e;
+                    const x = (pt.clientX - rect.left) * (canvas.width / rect.width);
+                    const y = (pt.clientY - rect.top) * (canvas.height / rect.height);
                     
-                    ctx.lineTo(clientX - rect.left, clientY - rect.top);
+                    ctx.lineTo(x, y);
                     ctx.stroke();
                     ctx.beginPath();
-                    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+                    ctx.moveTo(x, y);
                 }
 
                 canvas.addEventListener('mousedown', (e) => { enDessin = true; ctx.beginPath(); dessiner(e); });
@@ -234,8 +235,8 @@
                 canvas.addEventListener('mouseup', () => enDessin = false);
                 canvas.addEventListener('mouseleave', () => enDessin = false);
                 
-                canvas.addEventListener('touchstart', (e) => { enDessin = true; ctx.beginPath(); dessiner(e); });
-                canvas.addEventListener('touchmove', (e) => { dessiner(e); });
+                canvas.addEventListener('touchstart', (e) => { e.preventDefault(); enDessin = true; ctx.beginPath(); dessiner(e); });
+                canvas.addEventListener('touchmove', (e) => { e.preventDefault(); dessiner(e); }, { passive: false });
                 canvas.addEventListener('touchend', () => enDessin = false);
             });
         }
@@ -247,7 +248,13 @@
         }
 
         function genererPDF() {
+            if (typeof html2pdf === 'undefined') {
+                alert("La bibliothèque PDF n'a pas pu être chargée. Vérifiez votre connexion internet puis rechargez la page.");
+                return;
+            }
+
             const elementsAMasquer = document.querySelectorAll('.id-no-print');
+            const restaurer = () => elementsAMasquer.forEach(el => el.style.display = '');
             elementsAMasquer.forEach(el => el.style.display = 'none');
 
             const element = document.getElementById('edl-document');
@@ -256,15 +263,15 @@
                 margin:       10,
                 filename:     'Constat_Etat_Des_Lieux_Blere.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'], avoid: '.evaluation-block' }
             };
 
-            html2pdf().set(options).from(element).save().then(() => {
-                elementsAMasquer.forEach(el => el.style.display = '');
-            }).catch(err => {
+            html2pdf().set(options).from(element).save().then(restaurer).catch(err => {
                 console.error(err);
-                elementsAMasquer.forEach(el => el.style.display = '');
+                restaurer();
+                alert("Erreur lors de la génération du PDF : " + (err && err.message ? err.message : err));
             });
         }
 
