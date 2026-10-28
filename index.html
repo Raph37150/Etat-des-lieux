@@ -11,6 +11,7 @@
     <!-- Version stabilisée de html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
+        .champ-invalide { border-color: #dc2626 !important; background-color: #fef2f2 !important; }
         .signature-pad {
             border: 2px dashed #cbd5e1;
             background-color: #f8fafc;
@@ -40,12 +41,13 @@
             <div>
                 <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">CONSTAT D'ÉTAT DES LIEUX</h2>
                 <div class="mt-2 flex gap-4 text-sm font-semibold">
-                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" checked class="text-indigo-600"> ENTRÉE</label>
-                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" class="text-indigo-600"> SORTIE</label>
+                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" id="type-entree" checked onchange="majType()" class="text-indigo-600"> ENTRÉE</label>
+                    <label class="flex items-center gap-1"><input type="radio" name="type_edl" id="type-sortie" onchange="majType()" class="text-indigo-600"> SORTIE</label>
                 </div>
             </div>
-            <div class="text-right text-sm text-gray-500">
-                <p>Date de visite : <input type="date" id="date-edl" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
+            <div class="text-right text-sm text-gray-500 space-y-1">
+                <p>Date de l'état des lieux : <input type="date" id="date-edl" data-req="Date de l'état des lieux" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
+                <p class="bloc-sortie hidden">Date de l'état des lieux d'entrée : <input type="date" id="date-entree" data-req="Date de l'état des lieux d'entrée" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
                 <script>document.getElementById('date-edl').valueAsDate = new Date();</script>
             </div>
         </div>
@@ -55,15 +57,19 @@
             <div>
                 <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-user"></i> Les Parties</h3>
                 <div class="space-y-2 text-sm">
-                    <div><span class="font-medium text-gray-600">Propriétaire / Mandant :</span> <input type="text" placeholder="Nom du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
-                    <div><span class="font-medium text-gray-600">Locataire(s) :</span> <input type="text" placeholder="Nom du locataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
-                    <div><span class="font-medium text-gray-600">Opérateur (Vous) :</span> <input type="text" value="Prestataire Indépendant - Bléré" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1 font-semibold text-gray-700"></div>
+                    <div><span class="font-medium text-gray-600">Bailleur (nom ou dénomination) :</span> <input type="text" data-req="Nom du bailleur" placeholder="Nom du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Domicile ou siège social du bailleur :</span> <input type="text" data-req="Domicile ou siège social du bailleur" placeholder="Adresse du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Locataire(s) :</span> <input type="text" data-req="Nom du locataire" placeholder="Nom du locataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div class="bloc-sortie hidden"><span class="font-medium text-gray-600">Nouvelle adresse du locataire :</span> <input type="text" data-req="Nouvelle adresse du locataire" placeholder="Nouveau domicile ou lieu d'hébergement" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <label class="flex items-center gap-2 text-gray-600 pt-1"><input type="checkbox" id="chk-mandataire" checked> État des lieux réalisé par un mandataire</label>
+                    <div><span class="font-medium text-gray-600">Mandataire (nom ou dénomination) :</span> <input type="text" data-req="Nom du mandataire" data-si="chk-mandataire" value="Prestataire Indépendant - Bléré" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1 font-semibold text-gray-700"></div>
+                    <div><span class="font-medium text-gray-600">Domicile ou siège social du mandataire :</span> <input type="text" data-req="Domicile ou siège social du mandataire" data-si="chk-mandataire" placeholder="Adresse du mandataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
                 </div>
             </div>
             <div>
                 <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-house"></i> Le Bien Locatif</h3>
                 <div class="space-y-2 text-sm">
-                    <div><span class="font-medium text-gray-600">Adresse complète :</span> <input type="text" placeholder="Adresse du logement" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Localisation (adresse complète) :</span> <input type="text" data-req="Localisation du logement" placeholder="Adresse du logement, étage, n° de porte" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
                     <div class="grid grid-cols-2 gap-2">
                         <div><span class="font-medium text-gray-600">Type :</span> <input type="text" placeholder="Ex: Studio, T3" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
                         <div><span class="font-medium text-gray-600">Énergie :</span> <input type="text" placeholder="Ex: Élec, Gaz" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
@@ -75,19 +81,21 @@
         <!-- COMPTEURS ET CLÉS -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="border border-gray-200 p-4 rounded-lg">
-                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-gauge text-indigo-500"></i> Relevés des Compteurs</h3>
+                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-gauge text-indigo-500"></i> Relevés des Compteurs individuels</h3>
                 <div class="space-y-2 text-sm">
-                    <div class="flex justify-between items-center"><span>Électricité :</span> <input type="text" placeholder="kWh" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
-                    <div class="flex justify-between items-center"><span>Eau Froide :</span> <input type="text" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
-                    <div class="flex justify-between items-center"><span>Gaz :</span> <input type="text" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"></div>
+                    <div class="flex justify-between items-center gap-2"><span>Électricité :</span> <span class="flex items-center gap-2"><input type="text" id="cpt-elec" data-req="Relevé compteur électricité" placeholder="kWh" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"><label class="text-xs text-gray-500 flex items-center gap-1 id-no-print"><input type="checkbox" onchange="toggleNA('cpt-elec', this)"> Sans objet</label></span></div>
+                    <div class="flex justify-between items-center gap-2"><span>Eau froide :</span> <span class="flex items-center gap-2"><input type="text" id="cpt-eau" data-req="Relevé compteur eau froide" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"><label class="text-xs text-gray-500 flex items-center gap-1 id-no-print"><input type="checkbox" onchange="toggleNA('cpt-eau', this)"> Sans objet</label></span></div>
+                    <div class="flex justify-between items-center gap-2"><span>Gaz :</span> <span class="flex items-center gap-2"><input type="text" id="cpt-gaz" data-req="Relevé compteur gaz" placeholder="m³" class="border border-gray-300 rounded px-2 py-1 w-28 text-right"><label class="text-xs text-gray-500 flex items-center gap-1 id-no-print"><input type="checkbox" onchange="toggleNA('cpt-gaz', this)"> Sans objet</label></span></div>
+                    
                 </div>
             </div>
             <div class="border border-gray-200 p-4 rounded-lg">
-                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-key text-indigo-500"></i> Remise des Clés</h3>
+                <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-key text-indigo-500"></i> Clés et moyens d'accès</h3>
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between items-center"><span>Clés Entrée :</span> <input type="number" value="1" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
                     <div class="flex justify-between items-center"><span>Badges / Vigik :</span> <input type="number" value="0" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
                     <div class="flex justify-between items-center"><span>Boîte aux lettres :</span> <input type="number" value="1" class="border border-gray-300 rounded px-2 py-1 w-16 text-center"></div>
+                    <div><span class="text-gray-600">Destination des clés / accès (locaux privatifs ou communs) :</span> <input type="text" data-req="Destination des clés et moyens d'accès" placeholder="Ex: porte d'entrée, cave, portail, local vélos..." class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
                 </div>
             </div>
         </div>
@@ -101,34 +109,7 @@
                 </button>
             </div>
             
-            <div id="conteneur-pieces" class="space-y-4">
-                <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm relative evaluation-block" id="piece-1">
-                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
-                        <input type="text" value="Entrée / Couloir" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
-                        <div class="flex gap-1 text-xs id-no-print">
-                            <button onclick="gererPhoto('piece-1')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border border-gray-300 cursor-pointer"><i class="fa-solid fa-camera"></i> Photo</button>
-                            <button onclick="this.closest('.evaluation-block').remove()" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded border border-red-200 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Murs :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Sols :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Plafond :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
-                    </div>
-                    <textarea placeholder="Observations précises (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
-                    <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
-                    <input type="file" accept="image/*" class="hidden input-photo" onchange="chargerFichierPhoto(event, 'piece-1')">
-                </div>
-            </div>
+            <div id="conteneur-pieces" class="space-y-4"></div>
         </div>
 
         <div class="mt-12 pt-6 border-t-2 border-gray-200">
@@ -149,41 +130,95 @@
     </main>
 
     <script>
-        let compteurPieces = 1;
+        let compteurPieces = 0;
+        const OPTIONS_ETAT = '<option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d\'usage</option><option>Mauvais état</option><option>Non concerné</option>';
+        const CLS_INPUT = 'border border-gray-300 rounded p-1 bg-gray-50 text-xs';
 
-        function ajouterPiece() {
+        function champEtat(label) {
+            return `<div class="flex items-center justify-between border-b border-gray-100 py-1">
+                <span class="font-medium">${label} :</span>
+                <select data-req="${label}" class="${CLS_INPUT}">${OPTIONS_ETAT}</select>
+            </div>`;
+        }
+
+        function ajouterPiece(nom) {
+            if (typeof nom !== 'string') nom = 'Nouvelle Pièce';
             compteurPieces++;
             const id = 'piece-' + compteurPieces;
             const HTMLPiece = `
                 <div class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm relative evaluation-block" id="${id}">
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
-                        <input type="text" value="Nouvelle Pièce" class="font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
+                        <input type="text" value="${nom}" data-req="Nom de la pièce" class="nom-piece font-bold text-lg text-gray-800 border-b border-gray-300 focus:border-indigo-500 outline-none w-48">
                         <div class="flex gap-1 text-xs id-no-print">
                             <button onclick="gererPhoto('${id}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border border-gray-300 cursor-pointer"><i class="fa-solid fa-camera"></i> Photo</button>
                             <button onclick="this.closest('.evaluation-block').remove()" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded border border-red-200 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Murs :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Sols :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
-                        <div class="flex items-center justify-between border-b border-gray-100 py-1">
-                            <span class="font-medium">Plafond :</span>
-                            <select class="border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option></select>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 text-sm">
+                        ${['Murs','Sols','Plafond','Portes','Fenêtres / volets','Équipements (prises, sanitaires...)'].map(champEtat).join('')}
                     </div>
-                    <textarea placeholder="Observations précises..." class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
+                    <textarea placeholder="Observations / réserves (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
+                    <textarea data-req="Évolutions depuis l'état des lieux d'entrée" placeholder="Évolutions constatées depuis l'état des lieux d'entrée (écrire « Aucune » si rien à signaler)" class="bloc-sortie hidden w-full text-xs border border-gray-200 rounded p-2 mt-2 h-12 resize-none bg-gray-50/50"></textarea>
                     <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
                     <input type="file" accept="image/*" class="hidden input-photo" onchange="chargerFichierPhoto(event, '${id}')">
                 </div>
             `;
             document.getElementById('conteneur-pieces').insertAdjacentHTML('beforeend', HTMLPiece);
+            majType();
         }
+
+        function majType() {
+            const sortie = document.getElementById('type-sortie').checked;
+            document.querySelectorAll('.bloc-sortie').forEach(el => el.classList.toggle('hidden', !sortie));
+        }
+
+        function toggleNA(idChamp, chk) {
+            const champ = document.getElementById(idChamp);
+            champ.disabled = chk.checked;
+            champ.value = chk.checked ? 'Sans objet' : '';
+            champ.classList.remove('champ-invalide');
+        }
+
+        function signatureVide(id) {
+            const c = document.getElementById(id);
+            const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+            for (let i = 3; i < d.length; i += 4) if (d[i] !== 0) return false;
+            return true;
+        }
+
+        // Contrôle des mentions obligatoires (loi ALUR, art. 3-2 loi du 06/07/1989 + décret n° 2016-382)
+        function validerEDL() {
+            document.querySelectorAll('.champ-invalide').forEach(el => el.classList.remove('champ-invalide'));
+            const erreurs = [];
+            let premier = null;
+            const signaler = (el, msg) => {
+                erreurs.push(msg);
+                if (el) { el.classList.add('champ-invalide'); if (!premier) premier = el; }
+            };
+
+            document.querySelectorAll('[data-req]').forEach(el => {
+                if (el.offsetParent === null) return;                       // champ masqué (ex. rubriques « sortie »)
+                if (el.dataset.si && !document.getElementById(el.dataset.si).checked) return;
+                if (el.value.trim() !== '') return;
+                const bloc = el.closest('.evaluation-block');
+                const nom = bloc ? (bloc.querySelector('.nom-piece').value.trim() || 'Pièce sans nom') : null;
+                signaler(el, (nom ? nom + ' – ' : '') + el.dataset.req);
+            });
+
+            if (!document.querySelector('.evaluation-block')) signaler(null, 'Au moins une pièce doit être décrite');
+            if (signatureVide('sig-operator')) signaler(document.getElementById('sig-operator'), 'Signature du bailleur / mandataire');
+            if (signatureVide('sig-tenant')) signaler(document.getElementById('sig-tenant'), 'Signature du locataire');
+
+            if (erreurs.length) {
+                alert('⚠️ PDF non généré : ' + erreurs.length + ' rubrique(s) obligatoire(s) à compléter (loi ALUR) :\n\n• ' + erreurs.join('\n• '));
+                if (premier) premier.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+            return true;
+        }
+
+        document.addEventListener('input', e => e.target.classList && e.target.classList.remove('champ-invalide'));
+        document.addEventListener('change', e => e.target.classList && e.target.classList.remove('champ-invalide'));
 
         function gererPhoto(idPiece) {
             document.getElementById(idPiece).querySelector('.input-photo').click();
@@ -253,6 +288,8 @@
                 return;
             }
 
+            if (!validerEDL()) return;
+
             const elementsAMasquer = document.querySelectorAll('.id-no-print');
             const restaurer = () => elementsAMasquer.forEach(el => el.style.display = '');
             elementsAMasquer.forEach(el => el.style.display = 'none');
@@ -275,7 +312,10 @@
             });
         }
 
-        window.onload = initialiserPadsSignature;
+        window.onload = function () {
+            initialiserPadsSignature();
+            ajouterPiece('Entrée / Couloir');
+        };
     </script>
 </body>
 </html>
