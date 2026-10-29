@@ -58,18 +58,46 @@
                 <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-user"></i> Les Parties</h3>
                 <div class="space-y-2 text-sm">
                     <div><span class="font-medium text-gray-600">Bailleur (nom ou dénomination) :</span> <input type="text" data-req="Nom du bailleur" placeholder="Nom du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
-                    <div><span class="font-medium text-gray-600">Domicile ou siège social du bailleur :</span> <input type="text" data-req="Domicile ou siège social du bailleur" placeholder="Adresse du bailleur" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Domicile ou siège social du bailleur :</span>
+                        <div class="grid grid-cols-6 gap-2 mt-1">
+                            <input type="text" data-req="Adresse du bailleur – numéro et voie" placeholder="Numéro et nom de la voie" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" placeholder="Complément (bât., étage, porte, lot...)" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" inputmode="numeric" maxlength="5" data-cp data-req="Adresse du bailleur – code postal" placeholder="Code postal" class="col-span-2 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" data-req="Adresse du bailleur – ville" placeholder="Ville" class="col-span-4 bg-white border border-gray-300 rounded px-2 py-1">
+                        </div>
+                    </div>
                     <div><span class="font-medium text-gray-600">Locataire(s) :</span> <input type="text" data-req="Nom du locataire" placeholder="Nom du locataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
-                    <div class="bloc-sortie hidden"><span class="font-medium text-gray-600">Nouvelle adresse du locataire :</span> <input type="text" data-req="Nouvelle adresse du locataire" placeholder="Nouveau domicile ou lieu d'hébergement" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div class="bloc-sortie hidden"><span class="font-medium text-gray-600">Nouvelle adresse du locataire :</span>
+                        <div class="grid grid-cols-6 gap-2 mt-1">
+                            <input type="text" data-req="Nouvelle adresse du locataire – numéro et voie" placeholder="Numéro et nom de la voie" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" placeholder="Complément (bât., étage, porte...)" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" inputmode="numeric" maxlength="5" data-cp data-req="Nouvelle adresse du locataire – code postal" placeholder="Code postal" class="col-span-2 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" data-req="Nouvelle adresse du locataire – ville" placeholder="Ville" class="col-span-4 bg-white border border-gray-300 rounded px-2 py-1">
+                        </div>
+                    </div>
                     <label class="flex items-center gap-2 text-gray-600 pt-1"><input type="checkbox" id="chk-mandataire" checked> État des lieux réalisé par un mandataire</label>
                     <div><span class="font-medium text-gray-600">Mandataire (nom ou dénomination) :</span> <input type="text" data-req="Nom du mandataire" data-si="chk-mandataire" value="Prestataire Indépendant - Bléré" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1 font-semibold text-gray-700"></div>
-                    <div><span class="font-medium text-gray-600">Domicile ou siège social du mandataire :</span> <input type="text" data-req="Domicile ou siège social du mandataire" data-si="chk-mandataire" placeholder="Adresse du mandataire" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Domicile ou siège social du mandataire :</span>
+                        <div class="grid grid-cols-6 gap-2 mt-1">
+                            <input type="text" data-req="Adresse du mandataire – numéro et voie" data-si="chk-mandataire" placeholder="Numéro et nom de la voie" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" placeholder="Complément (bât., étage, porte, lot...)" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" inputmode="numeric" maxlength="5" data-cp data-req="Adresse du mandataire – code postal" data-si="chk-mandataire" placeholder="Code postal" class="col-span-2 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" data-req="Adresse du mandataire – ville" data-si="chk-mandataire" placeholder="Ville" class="col-span-4 bg-white border border-gray-300 rounded px-2 py-1">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div>
                 <h3 class="text-indigo-700 font-bold border-b border-indigo-200 pb-1 mb-3"><i class="fa-solid fa-house"></i> Le Bien Locatif</h3>
                 <div class="space-y-2 text-sm">
-                    <div><span class="font-medium text-gray-600">Localisation (adresse complète) :</span> <input type="text" data-req="Localisation du logement" placeholder="Adresse du logement, étage, n° de porte" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
+                    <div><span class="font-medium text-gray-600">Localisation du logement :</span>
+                        <div class="grid grid-cols-6 gap-2 mt-1">
+                            <input type="text" data-req="Adresse du logement – numéro et voie" placeholder="Numéro et nom de la voie" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" placeholder="Complément (bât., étage, n° de porte, lot...)" class="col-span-6 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" inputmode="numeric" maxlength="5" data-cp data-req="Adresse du logement – code postal" placeholder="Code postal" class="col-span-2 bg-white border border-gray-300 rounded px-2 py-1">
+                            <input type="text" data-req="Adresse du logement – ville" placeholder="Ville" class="col-span-4 bg-white border border-gray-300 rounded px-2 py-1">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div><span class="font-medium text-gray-600">Type :</span> <input type="text" placeholder="Ex: Studio, T3" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
                         <div><span class="font-medium text-gray-600">Énergie :</span> <input type="text" placeholder="Ex: Élec, Gaz" class="w-full bg-white border border-gray-300 rounded px-2 py-1 mt-1"></div>
@@ -100,6 +128,71 @@
             </div>
         </div>
 
+        <!-- ÉQUIPEMENTS ET ACCESSOIRES -->
+        <div class="mb-8 border border-gray-200 p-4 rounded-lg">
+            <h3 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-fire-burner text-indigo-500"></i> Équipements et accessoires du logement</h3>
+            <div class="text-sm">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Chaudière</span>
+                    <select id="eq-chaudiere" data-req="Équipements – Chaudière" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center py-1 pl-4 text-xs">
+                    <span class="md:col-span-4 text-gray-600">Date du dernier entretien de la chaudière</span>
+                    <input type="date" data-req="Équipements – Chaudière – date du dernier entretien" data-sauf-na="eq-chaudiere" class="md:col-span-3 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                    <span class="md:col-span-5 text-gray-400 id-no-print">Non exigé si l'équipement est « Non concerné »</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Chauffe-eau / ballon d'eau chaude</span>
+                    <select id="eq-chauffeeau" data-req="Équipements – Chauffe-eau / ballon d'eau chaude" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Radiateurs / convecteurs / plancher chauffant</span>
+                    <select id="eq-radiateurs" data-req="Équipements – Radiateurs / convecteurs / plancher chauffant" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Cheminée / poêle / insert</span>
+                    <select id="eq-cheminee" data-req="Équipements – Cheminée / poêle / insert" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center py-1 pl-4 text-xs">
+                    <span class="md:col-span-4 text-gray-600">Date du dernier ramonage</span>
+                    <input type="date" data-req="Équipements – Cheminée – date du dernier ramonage" data-sauf-na="eq-cheminee" class="md:col-span-3 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                    <span class="md:col-span-5 text-gray-400 id-no-print">Non exigé si l'équipement est « Non concerné »</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Ventilation (VMC, grilles d'aération)</span>
+                    <select id="eq-ventilation" data-req="Équipements – Ventilation (VMC, grilles d'aération)" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Détecteur de fumée (DAAF)</span>
+                    <select id="eq-daaf" data-req="Équipements – Détecteur de fumée (DAAF)" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Présent – fonctionne</option><option>Présent – ne fonctionne pas</option><option>Absent</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Interphone / visiophone / sonnette</span>
+                    <select id="eq-interphone" data-req="Équipements – Interphone / visiophone / sonnette" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Cuisine équipée (évier, plaques, hotte...)</span>
+                    <select id="eq-cuisine" data-req="Équipements – Cuisine équipée (évier, plaques, hotte...)" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:items-center border-b border-gray-100 py-1">
+                    <span class="md:col-span-4 font-medium">Dépendances (cave, garage, jardin, balcon...)</span>
+                    <select id="eq-dependances" data-req="Équipements – Dépendances (cave, garage, jardin, balcon...)" class="md:col-span-3 border border-gray-300 rounded p-1 bg-gray-50 text-xs"><option value="">— Choisir —</option><option>Très bon état</option><option>Bon état</option><option>État d'usage</option><option>Mauvais état</option><option>Non concerné</option></select>
+                    <input type="text" placeholder="Précisions (marque, n°, observations...)" class="md:col-span-5 border border-gray-300 rounded px-2 py-1 bg-white text-xs">
+                </div>
+                <div class="py-2"><span class="font-medium">Autres équipements ou accessoires :</span>
+                    <input type="text" placeholder="Ex : store banne, volets roulants électriques, cumulus, adoucisseur..." class="w-full mt-1 border border-gray-300 rounded px-2 py-1 bg-white text-xs"></div>
+                <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" data-req="Évolutions des équipements depuis l'état des lieux d'entrée" placeholder="Évolutions constatées sur les équipements depuis l'état des lieux d'entrée (écrire « Aucune » si rien à signaler)" class="bloc-sortie hidden w-full text-xs border border-gray-200 rounded p-2 mt-2 min-h-12 resize-none bg-gray-50/50"></textarea>
+            </div>
+        </div>
+
         <!-- ÉTATS DES PIÈCES -->
         <div class="mb-8">
             <div class="flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-4">
@@ -110,6 +203,22 @@
             </div>
             
             <div id="conteneur-pieces" class="space-y-4"></div>
+        </div>
+
+        <!-- OBSERVATIONS GÉNÉRALES -->
+        <div class="mt-10 pt-6 border-t-2 border-gray-200">
+            <h3 class="text-lg font-bold text-gray-800 mb-3"><i class="fa-solid fa-pen-to-square text-indigo-600"></i> Observations générales et réserves</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Observations du bailleur / mandataire :</p>
+                    <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" placeholder="Remarques générales, documents ou photos annexés, éléments non vérifiables (logement meublé, cave non accessible...)" class="w-full border border-gray-300 rounded p-2 text-xs min-h-24 resize-none bg-gray-50/50"></textarea>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Observations et réserves du locataire :</p>
+                    <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" placeholder="Réserves, désaccords éventuels, remarques du locataire (écrire « Aucune » si rien à signaler)" class="w-full border border-gray-300 rounded p-2 text-xs min-h-24 resize-none bg-gray-50/50"></textarea>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-3">Le présent état des lieux est établi contradictoirement entre les parties, en deux exemplaires remis à chacune d'elles.</p>
         </div>
 
         <div class="mt-12 pt-6 border-t-2 border-gray-200">
@@ -155,10 +264,10 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 text-sm">
-                        ${['Murs','Sols','Plafond','Portes','Fenêtres / volets','Équipements (prises, sanitaires...)'].map(champEtat).join('')}
+                        ${['Murs','Sols','Plafond','Portes','Fenêtres / volets','Placards / rangements','Équipements (prises, sanitaires...)'].map(champEtat).join('')}
                     </div>
-                    <textarea placeholder="Observations / réserves (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
-                    <textarea data-req="Évolutions depuis l'état des lieux d'entrée" placeholder="Évolutions constatées depuis l'état des lieux d'entrée (écrire « Aucune » si rien à signaler)" class="bloc-sortie hidden w-full text-xs border border-gray-200 rounded p-2 mt-2 h-12 resize-none bg-gray-50/50"></textarea>
+                    <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" placeholder="Observations / réserves (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
+                    <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" data-req="Évolutions depuis l'état des lieux d'entrée" placeholder="Évolutions constatées depuis l'état des lieux d'entrée (écrire « Aucune » si rien à signaler)" class="bloc-sortie hidden w-full text-xs border border-gray-200 rounded p-2 mt-2 h-12 resize-none bg-gray-50/50"></textarea>
                     <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
                     <input type="file" accept="image/*" multiple class="hidden input-photo" onchange="chargerFichierPhoto(event, '${id}')">
                 </div>
@@ -199,7 +308,11 @@
             document.querySelectorAll('[data-req]').forEach(el => {
                 if (el.offsetParent === null) return;                       // champ masqué (ex. rubriques « sortie »)
                 if (el.dataset.si && !document.getElementById(el.dataset.si).checked) return;
-                if (el.value.trim() !== '') return;
+                if (el.dataset.saufNa) { const ref = document.getElementById(el.dataset.saufNa); if (ref && ref.value === 'Non concerné') return; }
+                if (el.value.trim() !== '') {
+                    if (el.hasAttribute('data-cp') && !/^\d{5}$/.test(el.value.trim())) signaler(el, el.dataset.req + ' (5 chiffres)');
+                    return;
+                }
                 const bloc = el.closest('.evaluation-block');
                 const nom = bloc ? (bloc.querySelector('.nom-piece').value.trim() || 'Pièce sans nom') : null;
                 signaler(el, (nom ? nom + ' – ' : '') + el.dataset.req);
