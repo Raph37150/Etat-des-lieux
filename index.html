@@ -27,7 +27,7 @@
             <h1 class="text-xl font-bold flex items-center gap-2">
                 <i class="fa-solid fa-clipboard-check"></i> EDL-Expert Touraine
             </h1>
-            <button onclick="genererPDF()" class="bg-emerald-500 hover:bg-emerald-600 font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
+            <button onclick="genererPDF(this)" class="bg-emerald-500 hover:bg-emerald-600 font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-file-pdf"></i> Générer le PDF
             </button>
         </div>
@@ -160,7 +160,7 @@
                     <textarea placeholder="Observations / réserves (trous de chevilles, usure, propreté...)" class="w-full text-xs border border-gray-200 rounded p-2 mt-3 h-12 resize-none bg-gray-50/50"></textarea>
                     <textarea data-req="Évolutions depuis l'état des lieux d'entrée" placeholder="Évolutions constatées depuis l'état des lieux d'entrée (écrire « Aucune » si rien à signaler)" class="bloc-sortie hidden w-full text-xs border border-gray-200 rounded p-2 mt-2 h-12 resize-none bg-gray-50/50"></textarea>
                     <div class="galerie-photos grid grid-cols-4 gap-2 mt-2"></div>
-                    <input type="file" accept="image/*" class="hidden input-photo" onchange="chargerFichierPhoto(event, '${id}')">
+                    <input type="file" accept="image/*" multiple class="hidden input-photo" onchange="chargerFichierPhoto(event, '${id}')">
                 </div>
             `;
             document.getElementById('conteneur-pieces').insertAdjacentHTML('beforeend', HTMLPiece);
@@ -224,22 +224,35 @@
             document.getElementById(idPiece).querySelector('.input-photo').click();
         }
 
+        // Ajoute une ou plusieurs photos à la pièce (redimensionnées pour garder un PDF léger)
         function chargerFichierPhoto(event, idPiece) {
-            const fichier = event.target.files[0];
-            if (!fichier) return;
+            const fichiers = Array.from(event.target.files || []);
+            const galerie = document.getElementById(idPiece).querySelector('.galerie-photos');
+            const MAX = 1280;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const galerie = document.getElementById(idPiece).querySelector('.galerie-photos');
-                const fragmentPhoto = `
-                    <div class="relative border border-gray-200 rounded overflow-hidden h-20 bg-gray-100">
-                        <img src="${e.target.result}" class="w-full h-full object-cover">
-                        <button onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5 id-no-print opacity-90 hover:opacity-100 cursor-pointer">X</button>
-                    </div>
-                `;
-                galerie.insertAdjacentHTML('beforeend', fragmentPhoto);
-            };
-            reader.readAsDataURL(fichier);
+            fichiers.forEach(fichier => {
+                if (!fichier.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const ratio = Math.min(1, MAX / Math.max(img.width, img.height));
+                        const c = document.createElement('canvas');
+                        c.width = Math.round(img.width * ratio);
+                        c.height = Math.round(img.height * ratio);
+                        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+                        const src = c.toDataURL('image/jpeg', 0.8);
+                        galerie.insertAdjacentHTML('beforeend', `
+                            <div class="relative border border-gray-200 rounded overflow-hidden h-20 bg-gray-100">
+                                <img src="${src}" class="w-full h-full object-cover">
+                                <button onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5 id-no-print opacity-90 hover:opacity-100 cursor-pointer">X</button>
+                            </div>`);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(fichier);
+            });
+            event.target.value = '';   // permet de re-sélectionner la même photo plus tard
         }
 
         function initialiserPadsSignature() {
@@ -282,34 +295,38 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        function genererPDF() {
-            if (typeof html2pdf === 'undefined') {
-                alert("La bibliothèque PDF n'a pas pu être chargée. Vérifiez votre connexion internet puis rechargez la page.");
-                return;
-            }
+        async function genererPDF(btn) {
+            const libelle = btn ? btn.innerHTML : '';
+            try {
+                if (typeof html2pdf === 'undefined') {
+                    alert("La bibliothèque PDF n'a pas pu être chargée. Vérifiez votre connexion internet puis rechargez la page.");
+                    return;
+                }
+                if (!validerEDL()) return;
 
-            if (!validerEDL()) return;
+                if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Génération...'; }
 
-            const elementsAMasquer = document.querySelectorAll('.id-no-print');
-            const restaurer = () => elementsAMasquer.forEach(el => el.style.display = '');
-            elementsAMasquer.forEach(el => el.style.display = 'none');
+                const options = {
+                    margin:       10,
+                    filename:     'Constat_Etat_Des_Lieux_Blere.pdf',
+                    image:        { type: 'jpeg', quality: 0.95 },
+                    html2canvas:  {
+                        scale: 1.5, useCORS: true, logging: false, scrollX: 0, scrollY: 0,
+                        // les boutons sont ignorés dans le PDF sans jamais être masqués à l'écran
+                        ignoreElements: el => el.classList && el.classList.contains('id-no-print')
+                    },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak:    { mode: ['css', 'legacy'], avoid: '.evaluation-block' }
+                };
 
-            const element = document.getElementById('edl-document');
-            
-            const options = {
-                margin:       10,
-                filename:     'Constat_Etat_Des_Lieux_Blere.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'], avoid: '.evaluation-block' }
-            };
-
-            html2pdf().set(options).from(element).save().then(restaurer).catch(err => {
+                window.scrollTo(0, 0);
+                await html2pdf().set(options).from(document.getElementById('edl-document')).save();
+            } catch (err) {
                 console.error(err);
-                restaurer();
                 alert("Erreur lors de la génération du PDF : " + (err && err.message ? err.message : err));
-            });
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = libelle; }
+            }
         }
 
         window.onload = function () {
