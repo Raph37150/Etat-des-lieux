@@ -48,6 +48,7 @@
             <div class="text-right text-sm text-gray-500 space-y-1">
                 <p>Date de l'état des lieux : <input type="date" id="date-edl" data-req="Date de l'état des lieux" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
                 <p class="bloc-sortie hidden">Date de l'état des lieux d'entrée : <input type="date" id="date-entree" data-req="Date de l'état des lieux d'entrée" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
+                <p class="bloc-sortie hidden">Date d'entrée dans les lieux du locataire : <input type="date" id="date-entree-lieux" data-req="Date d'entrée dans les lieux du locataire" class="border rounded px-2 py-1 text-gray-800 font-medium"></p>
                 <script>document.getElementById('date-edl').valueAsDate = new Date();</script>
             </div>
         </div>
@@ -235,6 +236,16 @@
                     <button onclick="effacerSignature('sig-tenant')" class="text-xs text-red-500 mt-1 hover:underline id-no-print cursor-pointer"><i class="fa-solid fa-eraser"></i> Effacer</button>
                 </div>
             </div>
+        </div>
+        <!-- MENTIONS LÉGALES -->
+        <div class="mt-8 pt-4 border-t border-gray-300 text-[10px] leading-snug text-gray-500">
+            <p class="font-semibold text-gray-600 mb-1">Mentions légales</p>
+            <p>État des lieux établi contradictoirement, conformément à l'article 3-2 de la loi n° 89-462 du 6 juillet 1989 modifiée par la loi n° 2014-366 du 24 mars 2014 pour l'accès au logement et un urbanisme rénové (loi ALUR), et au décret n° 2016-382 du 30 mars 2016.</p>
+            <ul class="list-disc pl-4 mt-1 space-y-0.5">
+                <li>Le locataire peut demander au bailleur ou à son représentant de compléter l'état des lieux d'entrée dans un délai de dix jours à compter de son établissement.</li>
+                <li>Pendant le premier mois de la période de chauffe, le locataire peut demander que l'état des lieux d'entrée soit complété par l'état des éléments de chauffage.</li>
+                <li>À défaut d'état des lieux ou de remise d'un exemplaire à l'une des parties, la présomption de l'article 1731 du Code civil (logement reçu en bon état) ne peut être invoquée par celle qui a fait obstacle à son établissement ou à sa remise.</li>
+            </ul>
         </div>
     </main>
 
